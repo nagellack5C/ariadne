@@ -1,0 +1,517 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.map-container {
+  flex: 1;
+  position: relative;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+.sidebar {
+  width: 400px;
+  background: #f8f9fa;
+  border-left: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  padding: 20px;
+  background: #fff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.sidebar-header h1 {
+  font-size: 24px;
+  color: #212529;
+  margin-bottom: 5px;
+}
+
+.sidebar-header p {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.sidebar-content {
+  padding: 20px;
+  flex: 1;
+}
+
+.step {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.step-number {
+  width: 30px;
+  height: 30px;
+  background: #007bff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.step.completed .step-number {
+  background: #28a745;
+}
+
+.step.active .step-number {
+  background: #007bff;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.city-selector {
+  margin-bottom: 15px;
+}
+
+.city-selector label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.city-selector input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.city-selector input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.date-selector {
+  margin-bottom: 15px;
+}
+
+.date-selector label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.date-selector input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.flight-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.flight-item {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.flight-item:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+}
+
+.flight-item.selected {
+  border-color: #007bff;
+  background: #e7f3ff;
+}
+
+.flight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.flight-carrier {
+  font-weight: 600;
+  color: #212529;
+}
+
+.flight-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #007bff;
+}
+
+.flight-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.flight-time {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hotel-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.hotel-item {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hotel-item:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+}
+
+.hotel-item.selected {
+  border-color: #007bff;
+  background: #e7f3ff;
+}
+
+.hotel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.hotel-name {
+  font-weight: 600;
+  color: #212529;
+  font-size: 16px;
+}
+
+.hotel-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #28a745;
+}
+
+.hotel-price-label {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: normal;
+}
+
+.hotel-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.stars {
+  color: #ffc107;
+}
+
+.rating-score {
+  background: #007bff;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.hotel-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.amenity-tag {
+  background: #e9ecef;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #495057;
+}
+
+.filter-section {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.filter-section label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.filter-section input[type="range"] {
+  width: 100%;
+}
+
+.filter-value {
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 3px;
+}
+
+.nights-selector {
+  margin-bottom: 15px;
+}
+
+.nights-selector label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.nights-selector input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.itinerary-editor {
+  margin-top: 15px;
+}
+
+.itinerary-day {
+  margin-bottom: 15px;
+}
+
+.itinerary-day label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.itinerary-day textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+}
+
+.itinerary-day textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+.btn-primary:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  margin-right: 10px;
+}
+
+.btn-secondary:hover {
+  background: #545b62;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.trip-summary {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.trip-summary h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #212529;
+}
+
+.trip-leg {
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.trip-leg-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.trip-leg-details {
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.6;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.map-instructions {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 1000;
+  font-size: 14px;
+  color: #495057;
+  max-width: 80%;
+  text-align: center;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  background: white;
+  border: 1px solid #ced4da;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  width: calc(100% - 2px);
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.autocomplete-item {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.autocomplete-item:hover {
+  background: #f8f9fa;
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.city-info {
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 2px;
+}
