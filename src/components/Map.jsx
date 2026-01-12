@@ -11,21 +11,21 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Component to fit bounds when airports change
-function MapBounds({ airports }) {
+// Component to fit bounds when cities change
+function MapBounds({ cities }) {
   const map = useMap();
 
   useEffect(() => {
-    if (airports && airports.length > 0) {
-      const bounds = L.latLngBounds(airports.map(a => [a.lat, a.lon]));
+    if (cities && cities.length > 0) {
+      const bounds = L.latLngBounds(cities.map(c => [c.lat, c.lon]));
       map.fitBounds(bounds, { padding: [50, 50] });
     }
-  }, [airports, map]);
+  }, [cities, map]);
 
   return null;
 }
 
-const Map = ({ airports, selectedAirports, onAirportClick, tripLegs }) => {
+const Map = ({ cities, selectedCities, onCityClick, tripLegs }) => {
   return (
     <div className="map-container">
       <MapContainer
@@ -39,23 +39,30 @@ const Map = ({ airports, selectedAirports, onAirportClick, tripLegs }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Show all airport markers */}
-        {airports.map((airport) => {
-          const isSelected = selectedAirports.some(a => a.code === airport.code);
+        {/* Show all city markers */}
+        {cities.map((city) => {
+          const isSelected = selectedCities.some(c => c.name === city.name);
 
           return (
             <Marker
-              key={airport.code}
-              position={[airport.lat, airport.lon]}
+              key={city.name}
+              position={[city.lat, city.lon]}
               eventHandlers={{
-                click: () => onAirportClick(airport)
+                click: () => onCityClick(city)
               }}
             >
               <Popup>
                 <div>
-                  <strong>{airport.city}</strong><br />
-                  {airport.country}<br />
-                  <em>({airport.code})</em>
+                  <strong>{city.name}</strong><br />
+                  {city.country}<br />
+                  <div style={{ marginTop: '5px', fontSize: '12px', color: '#666' }}>
+                    {city.airports.length} airport{city.airports.length > 1 ? 's' : ''}:
+                    {city.airports.map((airport, idx) => (
+                      <div key={airport.code}>
+                        {airport.code} - {airport.name}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </Popup>
             </Marker>
@@ -64,32 +71,27 @@ const Map = ({ airports, selectedAirports, onAirportClick, tripLegs }) => {
 
         {/* Draw lines between trip legs */}
         {tripLegs.map((leg, index) => {
-          if (leg.flight && leg.flight.from && leg.flight.to) {
-            const fromAirport = airports.find(a => a.code === leg.flight.from);
-            const toAirport = airports.find(a => a.code === leg.flight.to);
-
-            if (fromAirport && toAirport) {
-              return (
-                <Polyline
-                  key={`leg-${index}`}
-                  positions={[
-                    [fromAirport.lat, fromAirport.lon],
-                    [toAirport.lat, toAirport.lon]
-                  ]}
-                  color="#007bff"
-                  weight={3}
-                  opacity={0.7}
-                />
-              );
-            }
+          if (leg.fromCity && leg.toCity) {
+            return (
+              <Polyline
+                key={`leg-${index}`}
+                positions={[
+                  [leg.fromCity.lat, leg.fromCity.lon],
+                  [leg.toCity.lat, leg.toCity.lon]
+                ]}
+                color="#007bff"
+                weight={3}
+                opacity={0.7}
+              />
+            );
           }
           return null;
         })}
 
-        <MapBounds airports={selectedAirports.length > 0 ? selectedAirports : []} />
+        <MapBounds cities={selectedCities.length > 0 ? selectedCities : []} />
       </MapContainer>
 
-      {selectedAirports.length === 0 && (
+      {selectedCities.length === 0 && (
         <div className="map-instructions">
           Click on a city marker or search in the sidebar to start planning your trip
         </div>

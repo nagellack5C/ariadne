@@ -1,27 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { generateMockFlights } from '../data/mockFlights';
 
-const FlightSearch = ({ fromAirport, toAirport, departureDate, onFlightSelect, selectedFlight }) => {
+const FlightSearch = ({ fromCity, toCity, departureDate, onFlightSelect, selectedFlight }) => {
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (fromAirport && toAirport && departureDate) {
+    if (fromCity && toCity && departureDate) {
       setLoading(true);
       // Simulate API call delay
       setTimeout(() => {
-        const mockFlights = generateMockFlights(
-          fromAirport.code,
-          toAirport.code,
-          departureDate
-        );
-        setFlights(mockFlights);
+        // Generate flights for all airport pair combinations
+        const allFlights = [];
+
+        fromCity.airports.forEach(fromAirport => {
+          toCity.airports.forEach(toAirport => {
+            const routeFlights = generateMockFlights(
+              fromAirport.code,
+              toAirport.code,
+              departureDate
+            );
+            allFlights.push(...routeFlights);
+          });
+        });
+
+        // Sort all flights by price
+        allFlights.sort((a, b) => a.price - b.price);
+
+        setFlights(allFlights);
         setLoading(false);
       }, 500);
     }
-  }, [fromAirport, toAirport, departureDate]);
+  }, [fromCity, toCity, departureDate]);
 
-  if (!fromAirport || !toAirport || !departureDate) {
+  if (!fromCity || !toCity || !departureDate) {
     return (
       <div className="empty-state">
         <div className="empty-state-icon">✈️</div>
@@ -42,7 +54,7 @@ const FlightSearch = ({ fromAirport, toAirport, departureDate, onFlightSelect, s
   return (
     <div>
       <div style={{ marginBottom: '15px', fontSize: '14px', color: '#6c757d' }}>
-        Found {flights.length} flights from {fromAirport.city} to {toAirport.city}
+        Found {flights.length} flights from {fromCity.name} to {toCity.name}
       </div>
 
       <div className="flight-list">
@@ -56,7 +68,7 @@ const FlightSearch = ({ fromAirport, toAirport, departureDate, onFlightSelect, s
               <div className="flight-carrier">
                 {flight.carrier}
                 <div style={{ fontSize: '12px', color: '#6c757d', fontWeight: 'normal' }}>
-                  {flight.flightNumber}
+                  {flight.flightNumber} • {flight.from} → {flight.to}
                 </div>
               </div>
               <div className="flight-price">

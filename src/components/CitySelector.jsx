@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { airports } from '../data/airports';
+import { cities } from '../data/airports';
 
 const CitySelector = ({ label, value, onChange, placeholder }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
-  const [filteredAirports, setFilteredAirports] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
     if (value) {
-      setSearchTerm(`${value.city}, ${value.country} (${value.code})`);
+      setSearchTerm(`${value.name}, ${value.country}`);
     }
   }, [value]);
 
@@ -29,20 +29,20 @@ const CitySelector = ({ label, value, onChange, placeholder }) => {
     setShowDropdown(true);
 
     if (term.length >= 2) {
-      const filtered = airports.filter(airport =>
-        airport.city.toLowerCase().includes(term.toLowerCase()) ||
-        airport.country.toLowerCase().includes(term.toLowerCase()) ||
-        airport.code.toLowerCase().includes(term.toLowerCase())
+      const filtered = cities.filter(city =>
+        city.name.toLowerCase().includes(term.toLowerCase()) ||
+        city.country.toLowerCase().includes(term.toLowerCase()) ||
+        city.airports.some(airport => airport.code.toLowerCase().includes(term.toLowerCase()))
       );
-      setFilteredAirports(filtered.slice(0, 10));
+      setFilteredCities(filtered.slice(0, 10));
     } else {
-      setFilteredAirports([]);
+      setFilteredCities([]);
     }
   };
 
-  const handleAirportSelect = (airport) => {
-    onChange(airport);
-    setSearchTerm(`${airport.city}, ${airport.country} (${airport.code})`);
+  const handleCitySelect = (city) => {
+    onChange(city);
+    setSearchTerm(`${city.name}, ${city.country}`);
     setShowDropdown(false);
   };
 
@@ -54,19 +54,19 @@ const CitySelector = ({ label, value, onChange, placeholder }) => {
         value={searchTerm}
         onChange={handleInputChange}
         onFocus={() => searchTerm.length >= 2 && setShowDropdown(true)}
-        placeholder={placeholder || "Search city or airport code..."}
+        placeholder={placeholder || "Search city..."}
       />
-      {showDropdown && filteredAirports.length > 0 && (
+      {showDropdown && filteredCities.length > 0 && (
         <div className="autocomplete-dropdown">
-          {filteredAirports.map((airport) => (
+          {filteredCities.map((city) => (
             <div
-              key={airport.code}
+              key={city.name}
               className="autocomplete-item"
-              onClick={() => handleAirportSelect(airport)}
+              onClick={() => handleCitySelect(city)}
             >
-              <div><strong>{airport.city}</strong></div>
+              <div><strong>{city.name}</strong></div>
               <div className="city-info">
-                {airport.country} ({airport.code})
+                {city.country} • {city.airports.length} airport{city.airports.length > 1 ? 's' : ''} ({city.airports.map(a => a.code).join(', ')})
               </div>
             </div>
           ))}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Map from './components/Map';
 import Sidebar from './components/Sidebar';
-import { airports } from './data/airports';
+import { cities } from './data/airports';
 import './App.css';
 
 function App() {
@@ -115,30 +115,30 @@ function App() {
     );
   };
 
-  const handleAirportClick = (airport) => {
+  const handleCityClick = (city) => {
     const leg = tripLegs[currentLeg];
 
     if (!leg.fromCity) {
-      handleFromCityChange(airport);
+      handleFromCityChange(city);
     } else if (!leg.toCity) {
-      handleToCityChange(airport);
+      handleToCityChange(city);
     }
   };
 
-  // Get selected airports for map display
-  const selectedAirports = tripLegs
+  // Get selected cities for map display
+  const selectedCities = tripLegs
     .filter(leg => leg.fromCity || leg.toCity)
     .flatMap(leg => [leg.fromCity, leg.toCity].filter(Boolean))
-    .filter((airport, index, self) =>
-      index === self.findIndex(a => a && airport && a.code === airport.code)
+    .filter((city, index, self) =>
+      index === self.findIndex(c => c && city && c.name === city.name)
     );
 
   return (
     <div className="app">
       <Map
-        airports={airports}
-        selectedAirports={selectedAirports}
-        onAirportClick={handleAirportClick}
+        cities={cities}
+        selectedCities={selectedCities}
+        onCityClick={handleCityClick}
         tripLegs={tripLegs}
       />
       <Sidebar

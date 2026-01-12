@@ -37,10 +37,10 @@ const Sidebar = ({
               return (
                 <div key={index} className="trip-leg">
                   <div className="trip-leg-header">
-                    ✈️ Leg {index + 1}: {tripLeg.flight?.from} → {tripLeg.flight?.to}
+                    ✈️ Leg {index + 1}: {tripLeg.fromCity?.name} → {tripLeg.toCity?.name}
                   </div>
                   <div className="trip-leg-details">
-                    <strong>Flight:</strong> {tripLeg.flight?.carrier} - ${tripLeg.flight?.price}<br />
+                    <strong>Flight:</strong> {tripLeg.flight?.carrier} ({tripLeg.flight?.from} → {tripLeg.flight?.to}) - ${tripLeg.flight?.price}<br />
                     <strong>Hotel:</strong> {tripLeg.hotel?.name} - ${tripLeg.hotel?.pricePerNight} × {tripLeg.nights} nights<br />
                     <strong>Activities:</strong> {Object.keys(tripLeg.itinerary).length} days planned
                   </div>
@@ -94,8 +94,8 @@ const Sidebar = ({
             </div>
 
             <FlightSearch
-              fromAirport={leg.fromCity}
-              toAirport={leg.toCity}
+              fromCity={leg.fromCity}
+              toCity={leg.toCity}
               departureDate={leg.departureDate}
               onFlightSelect={onFlightSelect}
               selectedFlight={leg.flight}

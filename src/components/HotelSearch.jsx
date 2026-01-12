@@ -15,7 +15,7 @@ const HotelSearch = ({ city, nights, onHotelSelect, selectedHotel }) => {
       setLoading(true);
       // Simulate API call delay
       setTimeout(() => {
-        const mockHotels = generateMockHotels(city.code);
+        const mockHotels = generateMockHotels(city.name);
         setHotels(mockHotels);
         setLoading(false);
       }, 500);
@@ -85,7 +85,7 @@ const HotelSearch = ({ city, nights, onHotelSelect, selectedHotel }) => {
       </div>
 
       <div style={{ marginBottom: '15px', fontSize: '14px', color: '#6c757d' }}>
-        Found {filteredHotels.length} hotels in {city.city}
+        Found {filteredHotels.length} hotels in {city.name}
       </div>
 
       <div className="hotel-list">
