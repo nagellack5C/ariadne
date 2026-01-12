@@ -115,6 +115,23 @@ function App() {
     );
   };
 
+  const handleRemoveLeg = (indexToRemove) => {
+    // Don't allow removing the current active leg
+    if (indexToRemove === currentLeg) {
+      return;
+    }
+
+    setTripLegs(prev => {
+      const newLegs = prev.filter((_, index) => index !== indexToRemove);
+      return newLegs;
+    });
+
+    // Adjust currentLeg index if we removed a leg before it
+    if (indexToRemove < currentLeg) {
+      setCurrentLeg(prev => prev - 1);
+    }
+  };
+
   const handleCityClick = (city) => {
     const leg = tripLegs[currentLeg];
 
@@ -153,6 +170,7 @@ function App() {
         onItineraryChange={handleItineraryChange}
         onNextLeg={handleNextLeg}
         onFinishTrip={handleFinishTrip}
+        onRemoveLeg={handleRemoveLeg}
       />
     </div>
   );

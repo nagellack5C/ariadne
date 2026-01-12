@@ -15,7 +15,8 @@ const Sidebar = ({
   onHotelSelect,
   onItineraryChange,
   onNextLeg,
-  onFinishTrip
+  onFinishTrip,
+  onRemoveLeg
 }) => {
   const leg = tripLegs[currentLeg] || {};
 
@@ -37,7 +38,14 @@ const Sidebar = ({
               return (
                 <div key={index} className="trip-leg">
                   <div className="trip-leg-header">
-                    ✈️ Leg {index + 1}: {tripLeg.fromCity?.name} → {tripLeg.toCity?.name}
+                    <span>✈️ Leg {index + 1}: {tripLeg.fromCity?.name} → {tripLeg.toCity?.name}</span>
+                    <button
+                      className="btn-remove-leg"
+                      onClick={() => onRemoveLeg(index)}
+                      title="Remove this leg"
+                    >
+                      ✕
+                    </button>
                   </div>
                   <div className="trip-leg-details">
                     <strong>Flight:</strong> {tripLeg.flight?.carrier} ({tripLeg.flight?.from} → {tripLeg.flight?.to}) - ${tripLeg.flight?.price}<br />
