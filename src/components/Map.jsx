@@ -17,8 +17,14 @@ function MapBounds({ cities }) {
 
   useEffect(() => {
     if (cities && cities.length > 0) {
-      const bounds = L.latLngBounds(cities.map(c => [c.lat, c.lon]));
-      map.fitBounds(bounds, { padding: [50, 50] });
+      if (cities.length === 1) {
+        // For a single city, just center on it with a moderate zoom level
+        map.setView([cities[0].lat, cities[0].lon], 5, { animate: true });
+      } else {
+        // For multiple cities, fit bounds with max zoom to prevent over-zooming
+        const bounds = L.latLngBounds(cities.map(c => [c.lat, c.lon]));
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 6 });
+      }
     }
   }, [cities, map]);
 
