@@ -72,6 +72,7 @@ body {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
+  gap: 10px;
 }
 
 .step-number {
@@ -91,6 +92,7 @@ body {
   font-size: 16px;
   font-weight: 600;
   color: #212529;
+  flex: 1;
 }
 
 .step.completed .step-number {
@@ -471,6 +473,24 @@ body {
 .btn-remove-leg:hover {
   background: #c82333;
   transform: scale(1.1);
+}
+
+.btn-reset-leg {
+  background: transparent;
+  border: 1px solid #6c757d;
+  color: #6c757d;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.btn-reset-leg:hover {
+  background: #6c757d;
+  color: white;
+  border-color: #6c757d;
 }
 
 .trip-leg-details {

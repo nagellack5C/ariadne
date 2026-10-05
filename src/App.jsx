@@ -116,26 +116,74 @@ function App() {
   };
 
   const handleRemoveLeg = (indexToRemove) => {
-    // Don't allow removing the current active leg
-    if (indexToRemove === currentLeg) {
-      return;
-    }
-
     setTripLegs(prev => {
       const newLegs = prev.filter((_, index) => index !== indexToRemove);
+
+      // If we're removing the last leg and it's the only one, reset to initial state
+      if (newLegs.length === 0) {
+        return [{
+          fromCity: null,
+          toCity: null,
+          departureDate: '',
+          flight: null,
+          nights: null,
+          hotel: null,
+          itinerary: {},
+          completed: false
+        }];
+      }
+
       return newLegs;
     });
 
-    // Adjust currentLeg index if we removed a leg before it
+    // Adjust currentLeg index after removal
     if (indexToRemove < currentLeg) {
       setCurrentLeg(prev => prev - 1);
+    } else if (indexToRemove === currentLeg) {
+      // If we removed the current leg, move to the last incomplete leg
+      setCurrentLeg(prev => Math.max(0, prev - 1));
+    }
+  };
+
+  const resetCurrentLeg = () => {
+    // Find the last completed leg
+    const completedLegs = tripLegs.filter(leg => leg.completed);
+
+    if (completedLegs.length > 0) {
+      // Reset to start from the end of the last completed leg
+      const lastCompletedLeg = completedLegs[completedLegs.length - 1];
+      updateCurrentLeg({
+        fromCity: lastCompletedLeg.toCity,
+        toCity: null,
+        departureDate: '',
+        flight: null,
+        nights: null,
+        hotel: null,
+        itinerary: {}
+      });
+    } else {
+      // No completed legs, reset to empty state
+      updateCurrentLeg({
+        fromCity: null,
+        toCity: null,
+        departureDate: '',
+        flight: null,
+        nights: null,
+        hotel: null,
+        itinerary: {}
+      });
     }
   };
 
   const handleCityClick = (city) => {
     const leg = tripLegs[currentLeg];
 
-    if (!leg.fromCity) {
+    // If user clicks a city when planning is already in progress, reset the current leg
+    if (leg.fromCity && leg.toCity) {
+      resetCurrentLeg();
+      // After reset, set the clicked city as the from city
+      setTimeout(() => handleFromCityChange(city), 0);
+    } else if (!leg.fromCity) {
       handleFromCityChange(city);
     } else if (!leg.toCity) {
       handleToCityChange(city);
@@ -171,6 +219,7 @@ function App() {
         onNextLeg={handleNextLeg}
         onFinishTrip={handleFinishTrip}
         onRemoveLeg={handleRemoveLeg}
+        onResetLeg={resetCurrentLeg}
       />
     </div>
   );

@@ -16,9 +16,13 @@ const Sidebar = ({
   onItineraryChange,
   onNextLeg,
   onFinishTrip,
-  onRemoveLeg
+  onRemoveLeg,
+  onResetLeg
 }) => {
   const leg = tripLegs[currentLeg] || {};
+
+  // Check if current leg has any progress
+  const hasProgress = leg.fromCity || leg.toCity || leg.departureDate || leg.flight || leg.hotel;
 
   return (
     <div className="sidebar">
@@ -65,6 +69,15 @@ const Sidebar = ({
             <div className="step-title">
               {currentLeg === 0 ? 'Start Your Journey' : `Next Destination (Leg ${currentLeg + 1})`}
             </div>
+            {hasProgress && !leg.completed && (
+              <button
+                className="btn-reset-leg"
+                onClick={onResetLeg}
+                title="Reset current leg"
+              >
+                🔄
+              </button>
+            )}
           </div>
 
           {/* City Selection */}
